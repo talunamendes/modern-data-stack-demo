@@ -12,6 +12,7 @@ up() {
   docker-compose -f docker-compose-airflow.yaml up -d
   
   echo "Starting Superset..."
+  # shellcheck disable=SC2164
   cd superset
   docker-compose -f docker-compose-superset.yaml down -v
   docker-compose -f docker-compose-superset.yaml up -d
@@ -23,21 +24,6 @@ up() {
   # Set connection ID for DAG.
   docker-compose -f docker-compose-airflow.yaml run airflow-webserver airflow variables set 'AIRBYTE_AIRBNB_NEIGHBOURHOOD_CONNECTION_ID' "$connection_id"
   docker-compose -f docker-compose-airflow.yaml run airflow-webserver airflow connections add 'airbyte_airbnb_neighbourhood' --conn-uri 'airbyte://host.docker.internal:8000'
-
-  echo "Access Airbyte at http://localhost:8000 and set up Airbyte Airbnb Listing connection."
-  echo "Enter your Airbyte Airbnb Listing connection ID: "
-  read connection_id
-  # Set connection ID for DAG.
-  docker-compose -f docker-compose-airflow.yaml run airflow-webserver airflow variables set 'AIRBYTE_AIRBNB_LISTING_CONNECTION_ID' "$connection_id"
-  docker-compose -f docker-compose-airflow.yaml run airflow-webserver airflow connections add 'airbyte_airbnb_listing' --conn-uri 'airbyte://host.docker.internal:8000'
-
-  echo "Access Airbyte at http://localhost:8000 and set up Airbyte Covid 19 RJ connection."
-  echo "Enter your Airbyte Covid 19 RJ connection ID: "
-  read connection_id
-  # Set connection ID for DAG.
-  docker-compose -f docker-compose-airflow.yaml run airflow-webserver airflow variables set 'AIRBYTE_COVID_RJ_CONNECTION_ID' "$connection_id"
-  docker-compose -f docker-compose-airflow.yaml run airflow-webserver airflow connections add 'airbyte_covid_rj' --conn-uri 'airbyte://host.docker.internal:8000'
-
 
   echo "Access Airflow at http://localhost:8080 to kick off your Airbyte sync DAG."
   echo "Access Superset at http://localhost:8088 to set up your dashboards."
